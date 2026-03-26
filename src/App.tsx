@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Passcode } from './components/Passcode';
 import { Nav } from './components/Nav';
 import { CsvUpload } from './components/CsvUpload';
 import { QuickEntry } from './components/QuickEntry';
@@ -142,6 +143,12 @@ function AppInner() {
 }
 
 export default function App() {
+  const [unlocked, setUnlocked] = useState(
+    !import.meta.env.VITE_PASSCODE || sessionStorage.getItem('auth') === '1'
+  );
+
+  if (!unlocked) return <Passcode onUnlock={() => setUnlocked(true)} />;
+
   return (
     <BrowserRouter>
       <AppInner />
