@@ -23,7 +23,7 @@ export function Nav({ hasData, onReimport, onQuickEntry, theme, onToggleTheme }:
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           {hasData && ['/', '/weeks', '/artists'].map((path, i) => {
-            const label = ['pipeline', 'weeks', 'artists'][i];
+            const label = ['schedule', 'weeks', 'artists'][i];
             return (
               <NavLink key={path} to={path} end={path === '/'}
                 style={({ isActive }) => ({ fontSize: 14, color: isActive ? 'var(--accent)' : 'var(--dim)', fontWeight: isActive ? 700 : 400 })}>
