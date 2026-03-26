@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #141412;
+  --surface: #1C1C1A;
+  --border: #2A2A28;
+  --text: #F2F2F0;
+  --dim: #A8A8A0;
+  --green: #39FF14;
+  --amber: #FFB800;
+  --red: #FF3B3B;
+  --accent: #39FF14;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Courier New', 'JetBrains Mono', 'IBM Plex Mono', monospace;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+}
+
+select {
+  font-family: inherit;
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+select:focus {
+  border-color: var(--accent);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
