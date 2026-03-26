@@ -32,20 +32,11 @@ export function useReleases() {
   }, []);
 
   const syncReleases = useCallback(async (newReleases: Release[]) => {
-    if (newReleases.length > 0) {
-      const { error } = await supabase
-        .from('releases')
-        .upsert(newReleases, { onConflict: 'id' });
-      if (error) throw error;
-    }
-    const { data: existing } = await supabase.from('releases').select('id');
-    if (existing && existing.length > 0) {
-      const newIds = new Set(newReleases.map(r => r.id));
-      const toDelete = existing.map(r => r.id as string).filter(id => !newIds.has(id));
-      if (toDelete.length > 0) {
-        await supabase.from('releases').delete().in('id', toDelete);
-      }
-    }
+    if (newReleases.length === 0) return;
+    const { error } = await supabase
+      .from('releases')
+      .upsert(newReleases, { onConflict: 'id' });
+    if (error) throw error;
   }, []);
 
   const toggleApproved = useCallback(async (id: string) => {

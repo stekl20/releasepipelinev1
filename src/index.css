@@ -17,11 +17,15 @@
   --surface: #EDEDEA;
   --border: #CFCFC8;
   --text: #1A1A18;
-  --dim: #666660;
+  --dim: #4A4A45;
   --green: #1A8A00;
   --amber: #8B6400;
   --red: #CC2200;
   --accent: #1A8A00;
+}
+
+[data-theme="light"] body {
+  text-shadow: 0 0 0.4px currentColor;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

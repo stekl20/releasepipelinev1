@@ -17,7 +17,7 @@ export function Nav({ hasData, onReimport, onQuickEntry, theme, onToggleTheme }:
           {hasData && (
             <>
               <button onClick={onQuickEntry} style={{ fontSize: 13, color: 'var(--dim)' }}>[+ add]</button>
-              <button onClick={onReimport} style={{ fontSize: 13, color: 'var(--dim)' }}>[re-import]</button>
+              <button onClick={onReimport} style={{ fontSize: 13, color: 'var(--dim)' }}>[import csv]</button>
             </>
           )}
         </div>
