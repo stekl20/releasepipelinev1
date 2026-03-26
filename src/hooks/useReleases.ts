@@ -57,7 +57,11 @@ export function useReleases() {
   const toggleDistributed = useCallback(async (id: string) => {
     const release = releases?.find(r => r.id === id);
     if (!release) return;
-    await supabase.from('releases').update({ distributed: !release.distributed }).eq('id', id);
+    const newDistributed = !release.distributed;
+    const updates: { distributed: boolean; approved?: boolean } = { distributed: newDistributed };
+    // Marking as distributed automatically approves
+    if (newDistributed && !release.approved) updates.approved = true;
+    await supabase.from('releases').update(updates).eq('id', id);
   }, [releases]);
 
   const deleteRelease = useCallback(async (id: string) => {

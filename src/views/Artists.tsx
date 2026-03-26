@@ -43,13 +43,19 @@ export function Artists({ releases, onToggleApproved, onToggleDistributed, onDel
 
   return (
     <div style={{ padding: '32px 0' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
         <span style={{ fontSize: 16, fontWeight: 700 }}>artists</span>
         <span style={{ color: 'var(--dim)', fontSize: 13 }}>act:</span>
         <select value={filterAct} onChange={e => setFilterAct(e.target.value)} style={{ fontSize: 13 }}>
           <option value="all">all acts</option>
           {acts.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
+      </div>
+      <div style={{ fontSize: 12, color: 'var(--dim)', display: 'flex', gap: 16 }}>
+        <span><span style={{ color: 'var(--text)' }}>[x]</span> approved</span>
+        <span><span style={{ color: 'var(--text)' }}>[x]</span> distributed</span>
+      </div>
       </div>
 
       {actGroups.length === 0 ? (

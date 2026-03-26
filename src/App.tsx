@@ -8,6 +8,7 @@ import { Pipeline } from './views/Pipeline';
 import { Weeks } from './views/Weeks';
 import { Artists } from './views/Artists';
 import { useReleases } from './hooks/useReleases';
+import { useTheme } from './hooks/useTheme';
 import { parseCsv } from './hooks/useCsvImport';
 import type { Release } from './types';
 
@@ -34,6 +35,7 @@ function UndoToast({ release, onUndo, onDismiss }: { release: Release; onUndo: (
 
 function AppInner() {
   const { releases, loading, setReleases, toggleApproved, toggleDistributed, deleteRelease, restoreRelease, updateRelease } = useReleases();
+  const { theme, toggleTheme } = useTheme();
   const [showBanner, setShowBanner] = useState(false);
   const [bannerData, setBannerData] = useState({ count: 0, weeks: 0 });
   const [importError, setImportError] = useState<string | null>(null);
@@ -109,7 +111,7 @@ function AppInner() {
 
   return (
     <>
-      <Nav hasData={true} onReimport={() => fileRef.current?.click()} onQuickEntry={() => setShowQuickEntry(true)} />
+      <Nav hasData={true} onReimport={() => fileRef.current?.click()} onQuickEntry={() => setShowQuickEntry(true)} theme={theme} onToggleTheme={toggleTheme} />
       <input ref={fileRef} type="file" accept=".csv" style={{ display: 'none' }} onChange={handleReimportFile} />
       {showBanner && <ImportBanner count={bannerData.count} weeks={bannerData.weeks} onDismiss={() => setShowBanner(false)} />}
       {importError && (

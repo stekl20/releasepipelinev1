@@ -25,17 +25,36 @@ function parseQuickText(text: string): { entries: ParsedEntry[]; errors: string[
   let currentDistributed = false;
 
   for (const line of lines) {
-    // Try to detect a date header line — e.g.:
-    //   "distributed for 3/31:"
-    //   "for Apr 7:"
-    //   "3/31"
-    //   "Apr 7, 2025"
-    const headerMatch = line.match(
-      /^(?:(distributed)\s+for\s+|for\s+)?(.+?)[:：]?\s*$/i
-    );
+    // Check for "distributed for date: act - title" or "date: act - title" single-line format
+    let checkLine = line;
+    let singleLineDistributed = false;
+    if (/^distributed\s+for\s+/i.test(line)) {
+      singleLineDistributed = true;
+      checkLine = line.replace(/^distributed\s+for\s+/i, '');
+    } else if (/^for\s+/i.test(line)) {
+      checkLine = line.replace(/^for\s+/i, '');
+    }
+    const colonIdx = checkLine.indexOf(': ');
+    if (colonIdx > 0) {
+      const potentialDate = checkLine.slice(0, colonIdx);
+      const rest = checkLine.slice(colonIdx + 2);
+      const parsedDate = parseDate(potentialDate);
+      if (parsedDate && rest.includes(' - ')) {
+        const { date: snapped } = snapToNextTuesday(parsedDate);
+        const isoDate = isoDateString(snapped);
+        const di = rest.indexOf(' - ');
+        const act = rest.slice(0, di).trim();
+        const title = rest.slice(di + 3).trim();
+        if (act && title) {
+          entries.push({ act, title, date: isoDate, distributed: singleLineDistributed });
+          continue;
+        }
+      }
+    }
 
-    // Check if the line looks like an act-title entry
+    // Try to detect a date header line — e.g. "distributed for 3/31:" or "Apr 7:"
     const isActTitle = line.includes(' - ');
+    const headerMatch = line.match(/^(?:(distributed)\s+for\s+|for\s+)?(.+?)[:：]?\s*$/i);
 
     if (!isActTitle && headerMatch) {
       const maybeDistributed = !!headerMatch[1];
@@ -49,7 +68,7 @@ function parseQuickText(text: string): { entries: ParsedEntry[]; errors: string[
       }
     }
 
-    // Try to parse as "Act - Title"
+    // Try to parse as "Act - Title" using current date context
     const dashIdx = line.indexOf(' - ');
     if (dashIdx === -1) {
       errors.push(`couldn't parse line: "${line}"`);

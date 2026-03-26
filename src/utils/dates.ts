@@ -15,6 +15,13 @@ export function parseDate(dateStr: string): Date | null {
     'MMM dd, yyyy',
     'MM/dd/yyyy',
     'M/d/yyyy',
+    // Month/day without year — e.g. "3/31", "4/7"
+    'M/d',
+    // Month name without year — e.g. "Apr 7", "April 7"
+    'MMMM d',
+    'MMM d',
+    'MMMM dd',
+    'MMM dd',
   ];
 
   for (const fmt of formats) {

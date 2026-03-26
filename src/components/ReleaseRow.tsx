@@ -28,7 +28,7 @@ function RowMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => voi
     <div ref={ref} style={{ position: 'relative', display: 'inline-block' }}>
       <button
         onClick={e => { e.stopPropagation(); setOpen(v => !v); }}
-        style={{ color: 'var(--dim)', fontSize: 13, opacity: 0.6, letterSpacing: 1 }}
+        style={{ color: 'var(--text)', fontSize: 13, letterSpacing: 2 }}
         title="options"
       >
         ···

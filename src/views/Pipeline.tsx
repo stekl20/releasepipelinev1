@@ -43,8 +43,16 @@ export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDe
     });
   }, [releases, filterDate, filterAct, filterStatus, today]);
 
-  const approved = releases.filter(r => r.approved).length;
-  const distributed = releases.filter(r => r.distributed).length;
+  // Stats always reflect the date filter, regardless of act/status filter
+  const statsBase = useMemo(() => releases.filter(r => {
+    const d = parseDate(r.date);
+    if (filterDate === 'upcoming' && d && d < today) return false;
+    if (filterDate === 'past' && d && d >= today) return false;
+    return true;
+  }), [releases, filterDate, today]);
+
+  const approved = statsBase.filter(r => r.approved).length;
+  const distributed = statsBase.filter(r => r.distributed).length;
 
   const upcomingDates = useMemo(() => {
     const set = new Set(releases.filter(r => {
@@ -57,9 +65,9 @@ export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDe
   return (
     <div style={{ padding: '32px 0' }}>
       <div style={{ fontSize: 13, color: 'var(--dim)', marginBottom: 24, display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-        <span>total: <span style={{ color: 'var(--text)' }}>{releases.length} releases</span></span>
-        <span>approved: <span style={{ color: 'var(--text)' }}>{approved}/{releases.length}</span></span>
-        <span>distributed: <span style={{ color: 'var(--text)' }}>{distributed}/{releases.length}</span></span>
+        <span>total: <span style={{ color: 'var(--text)' }}>{statsBase.length} releases</span></span>
+        <span>approved: <span style={{ color: 'var(--text)' }}>{approved}/{statsBase.length}</span></span>
+        <span>distributed: <span style={{ color: 'var(--text)' }}>{distributed}/{statsBase.length}</span></span>
         <span>weeks covered: <span style={{ color: 'var(--text)' }}>{upcomingDates}</span></span>
       </div>
 
