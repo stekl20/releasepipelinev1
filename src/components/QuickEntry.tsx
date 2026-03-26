@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 import type { Release } from '../types';
 import { parseDate, snapToNextTuesday, isoDateString } from '../utils/dates';
 import { slugify } from '../utils/slugify';
@@ -95,6 +96,7 @@ function parseQuickText(text: string): { entries: ParsedEntry[]; errors: string[
 }
 
 export function QuickEntry({ existingReleases, onAdd, onClose }: QuickEntryProps) {
+  const isMobile = useIsMobile();
   const [text, setText] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -141,10 +143,10 @@ export function QuickEntry({ existingReleases, onAdd, onClose }: QuickEntryProps
         inset: 0,
         backgroundColor: 'rgba(0,0,0,0.7)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: isMobile ? 'flex-end' : 'center',
         justifyContent: 'center',
         zIndex: 100,
-        padding: 24,
+        padding: isMobile ? 0 : 24,
       }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
@@ -153,8 +155,9 @@ export function QuickEntry({ existingReleases, onAdd, onClose }: QuickEntryProps
           backgroundColor: 'var(--surface)',
           border: '1px solid var(--border)',
           width: '100%',
-          maxWidth: 540,
+          maxWidth: isMobile ? '100%' : 540,
           padding: 24,
+          borderRadius: isMobile ? '12px 12px 0 0' : 0,
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>

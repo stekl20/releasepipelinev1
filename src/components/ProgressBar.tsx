@@ -4,19 +4,15 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ count, target }: ProgressBarProps) {
-  const filled = Math.min(count, target);
-  const bar = '█'.repeat(filled) + '░'.repeat(target - filled);
-
-  const color =
-    count === target
-      ? 'var(--green)'
-      : count < target
-      ? 'var(--amber)'
-      : 'var(--green)'; // >target is fine, treat as green
+  const pct = Math.min(count / target, 1) * 100;
+  const color = count >= target ? 'var(--green)' : 'var(--amber)';
 
   return (
-    <span style={{ color, fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
-      {bar}{'  '}{count}/{target}
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
+      <span style={{ display: 'inline-block', width: 56, height: 10, backgroundColor: 'var(--border)', position: 'relative', verticalAlign: 'middle' }}>
+        <span style={{ display: 'block', width: `${pct}%`, height: '100%', backgroundColor: color }} />
+      </span>
+      <span style={{ color, fontSize: 13 }}>{count}/{target}</span>
     </span>
   );
 }

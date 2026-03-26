@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 import type { Release } from '../types';
 import { parseDate, snapToNextTuesday, isoDateString } from '../utils/dates';
 import { slugify } from '../utils/slugify';
@@ -10,6 +11,7 @@ interface EditReleaseProps {
 }
 
 export function EditRelease({ release, onSave, onClose }: EditReleaseProps) {
+  const isMobile = useIsMobile();
   const [act, setAct] = useState(release.act);
   const [title, setTitle] = useState(release.title);
   const [date, setDate] = useState(release.date);
@@ -55,10 +57,10 @@ export function EditRelease({ release, onSave, onClose }: EditReleaseProps) {
 
   return (
     <div
-      style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 24 }}
+      style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 100, padding: isMobile ? 0 : 24 }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', width: '100%', maxWidth: 400, padding: 24 }}>
+      <div style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', width: '100%', maxWidth: isMobile ? '100%' : 400, padding: 24, borderRadius: isMobile ? '12px 12px 0 0' : 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <span style={{ fontWeight: 700, fontSize: 15 }}>edit release</span>
           <button onClick={onClose} style={{ color: 'var(--dim)', fontSize: 13 }}>[close]</button>

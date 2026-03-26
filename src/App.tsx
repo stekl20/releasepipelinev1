@@ -129,7 +129,7 @@ function AppInner() {
           onClose={() => setShowQuickEntry(false)}
         />
       )}
-      <main style={{ maxWidth: 960, margin: '0 auto', padding: '0 24px', width: '100%' }}>
+      <main style={{ maxWidth: 960, margin: '0 auto', padding: '0 16px', width: '100%' }}>
         <Routes>
           <Route path="/" element={<Pipeline releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onDelete={handleDelete} onEdit={setEditingRelease} />} />
           <Route path="/weeks" element={<Weeks releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onDelete={handleDelete} onEdit={setEditingRelease} />} />

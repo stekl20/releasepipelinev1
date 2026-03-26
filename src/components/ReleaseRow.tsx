@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Release } from '../types';
 import { formatDate } from '../utils/dates';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface ReleaseRowProps {
   release: Release;
@@ -35,16 +36,12 @@ function RowMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => voi
       </button>
       {open && (
         <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, backgroundColor: 'var(--surface)', border: '1px solid var(--border)', zIndex: 20, minWidth: 80 }}>
-          <button
-            onClick={() => { setOpen(false); onEdit(); }}
-            style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 12px', fontSize: 13, color: 'var(--text)' }}
-          >
+          <button onClick={() => { setOpen(false); onEdit(); }}
+            style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 12px', fontSize: 13, color: 'var(--text)' }}>
             edit
           </button>
-          <button
-            onClick={() => { setOpen(false); onDelete(); }}
-            style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 12px', fontSize: 13, color: 'var(--red)' }}
-          >
+          <button onClick={() => { setOpen(false); onDelete(); }}
+            style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 12px', fontSize: 13, color: 'var(--red)' }}>
             delete
           </button>
         </div>
@@ -54,6 +51,7 @@ function RowMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => voi
 }
 
 export function ReleaseRow({ release, onToggleApproved, onToggleDistributed, onDelete, onEdit, compact = false }: ReleaseRowProps) {
+  const isMobile = useIsMobile();
   const isDone = release.approved && release.distributed;
 
   const rowColor = isDone
@@ -61,6 +59,30 @@ export function ReleaseRow({ release, onToggleApproved, onToggleDistributed, onD
     : release.approved && !release.distributed
     ? 'var(--amber)'
     : 'var(--text)';
+
+  // Mobile layout — card style
+  if (isMobile) {
+    return (
+      <div style={{ padding: '10px 0', borderTop: '1px solid var(--border)', color: rowColor }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {!compact && <div style={{ fontSize: 12, color: 'var(--dim)', marginBottom: 2 }}>{release.act}</div>}
+            <div style={{ fontSize: 14, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{release.title}</div>
+            <div style={{ fontSize: 12, color: 'var(--dim)', marginTop: 4 }}>{formatDate(release.date)}</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 12, flexShrink: 0 }}>
+            <button onClick={() => onToggleApproved(release.id)} style={{ fontSize: 13, color: rowColor }}>
+              {release.approved ? '[x]' : '[ ]'}
+            </button>
+            <button onClick={() => onToggleDistributed(release.id)} style={{ fontSize: 13, color: 'var(--dim)' }}>
+              {release.distributed ? '[x]' : '[ ]'}
+            </button>
+            <RowMenu onEdit={() => onEdit(release)} onDelete={() => onDelete(release.id)} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (compact) {
     return (

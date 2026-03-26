@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import type { Release } from '../types';
 import { ReleaseRow } from '../components/ReleaseRow';
 import { parseDate } from '../utils/dates';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface PipelineProps {
   releases: Release[];
@@ -15,6 +16,7 @@ type FilterStatus = 'all' | 'pending' | 'approved' | 'distributed';
 type FilterDate = 'upcoming' | 'all' | 'past';
 
 export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDelete, onEdit }: PipelineProps) {
+  const isMobile = useIsMobile();
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [filterAct, setFilterAct] = useState<string>('all');
   const [filterDate, setFilterDate] = useState<FilterDate>('upcoming');
@@ -92,15 +94,15 @@ export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDe
         </select>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '160px 220px 90px 100px 110px 44px', gap: 8, paddingBottom: 8, fontSize: 13, color: 'var(--dim)', letterSpacing: '0.05em' }}>
-        <span>ACT</span>
-        <span>TITLE</span>
-        <span>DATE</span>
-        <span>APPROVED</span>
-        <span>DISTRIBUTED</span>
-        <span />
-      </div>
-      <hr />
+      {!isMobile && (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: '160px 220px 90px 100px 110px 44px', gap: 8, paddingBottom: 8, fontSize: 13, color: 'var(--dim)', letterSpacing: '0.05em' }}>
+            <span>ACT</span><span>TITLE</span><span>DATE</span><span>APPROVED</span><span>DISTRIBUTED</span><span />
+          </div>
+          <hr />
+        </>
+      )}
+      {isMobile && <hr />}
 
       {filtered.length === 0 ? (
         <div style={{ color: 'var(--dim)', padding: '24px 0', fontSize: 14 }}>no releases match current filters.</div>
