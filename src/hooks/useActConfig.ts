@@ -11,6 +11,7 @@ type ActConfigMap = Record<string, ActConfig>;
 
 export function useActConfig() {
   const [actConfig, setActConfig] = useState<ActConfigMap>({});
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     supabase.from('act_config').select('*').then(({ data }) => {
@@ -19,6 +20,7 @@ export function useActConfig() {
         for (const row of data) map[row.act] = row;
         setActConfig(map);
       }
+      setLoaded(true);
     });
 
     const channel = supabase
@@ -55,5 +57,5 @@ export function useActConfig() {
     await supabase.from('act_config').upsert({ act: key, cadence: actConfig[key]?.cadence ?? 14, retired });
   }
 
-  return { actConfig, getCadence, setCadence, setRetired };
+  return { actConfig, loaded, getCadence, setCadence, setRetired };
 }

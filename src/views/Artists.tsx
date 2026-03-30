@@ -118,7 +118,7 @@ function NeedsAttention({ items, open, onToggle, isMobile }: NeedsAttentionProps
 
 export function Artists({ releases, onToggleApproved, onToggleDistributed, onDelete, onEdit }: ArtistsProps) {
   const isMobile = useIsMobile();
-  const { actConfig, getCadence, setCadence, setRetired } = useActConfig();
+  const { actConfig, loaded: actConfigLoaded, getCadence, setCadence, setRetired } = useActConfig();
   const [filterAct, setFilterAct] = useState<string>('all');
   const [attentionOpen, setAttentionOpen] = useState(true);
   const [retiredOpen, setRetiredOpen] = useState(false);
@@ -225,6 +225,8 @@ export function Artists({ releases, onToggleApproved, onToggleDistributed, onDel
       .filter(([key]) => filterAct === 'all' || key === filterAct)
       .sort((a, b) => b[1].releases.length - a[1].releases.length);
   }, [upcomingReleases, filterAct]);
+
+  if (!actConfigLoaded) return <div style={{ padding: '32px 0' }} />;
 
   return (
     <div style={{ padding: '32px 0' }}>
