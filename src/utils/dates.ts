@@ -54,6 +54,38 @@ export function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+export function addDays(date: Date, days: number): Date {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+// Find the next Tuesday at or after (latestDate + cadence) that has fewer than target releases.
+// releasesPerDate maps ISO date string → release count for all releases.
+export function findNextOpenSlot(
+  latestDate: Date,
+  cadence: number,
+  releasesPerDate: Map<string, number>,
+  target: number = 7
+): Date {
+  // Start from the ideal date and snap to the next Tuesday
+  let candidate = addDays(latestDate, cadence);
+  const day = candidate.getDay(); // 0=Sun, 2=Tue
+  if (day !== 2) {
+    const daysToTuesday = (2 - day + 7) % 7 || 7;
+    candidate = addDays(candidate, daysToTuesday);
+  }
+
+  // Walk forward week by week until we find a slot with room
+  for (let i = 0; i < 13; i++) {
+    const key = isoDateString(candidate);
+    if ((releasesPerDate.get(key) ?? 0) < target) return candidate;
+    candidate = addDays(candidate, 7);
+  }
+
+  return candidate; // fallback: return even if full
+}
+
 export function isoDateString(date: Date): string {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');

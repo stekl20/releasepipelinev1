@@ -9,7 +9,7 @@ export function ProgressBar({ count, target }: ProgressBarProps) {
 
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
-      <span style={{ display: 'inline-block', width: 56, height: 10, backgroundColor: 'var(--border)', position: 'relative', verticalAlign: 'middle' }}>
+      <span style={{ display: 'inline-block', width: 56, height: 12, backgroundColor: 'var(--border-strong, var(--border))', position: 'relative', verticalAlign: 'middle' }}>
         <span style={{ display: 'block', width: `${pct}%`, height: '100%', backgroundColor: color }} />
       </span>
       <span style={{ color, fontSize: 13 }}>{count}/{target}</span>

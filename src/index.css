@@ -16,12 +16,13 @@
   --bg: #F8F8F4;
   --surface: #EDEDEA;
   --border: #CFCFC8;
+  --border-strong: #ADADAA;
   --text: #1A1A18;
   --dim: #4A4A45;
-  --green: #1A8A00;
-  --amber: #8B6400;
-  --red: #CC2200;
-  --accent: #1A8A00;
+  --green: #1C7A00;
+  --amber: #C44A00;
+  --red: #B80000;
+  --accent: #1C7A00;
 }
 
 [data-theme="light"] body {
