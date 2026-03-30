@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { Release } from '../types';
 import { WeekRow } from '../components/WeekRow';
-import { parseDate, weeksOut } from '../utils/dates';
+import { parseDate, weeksOut, addDays, isoDateString } from '../utils/dates';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 interface WeeksProps {
@@ -25,6 +25,19 @@ export function Weeks({ releases, onToggleApproved, onToggleDistributed, onDelet
 
   const weekGroups = useMemo(() => {
     const groups = new Map<string, Release[]>();
+
+    // Seed the next 6 Tuesdays as empty slots
+    if (!showAll) {
+      const dayOfWeek = today.getDay();
+      const daysToTuesday = dayOfWeek === 2 ? 0 : (2 - dayOfWeek + 7) % 7;
+      let cursor = daysToTuesday === 0 ? today : addDays(today, daysToTuesday);
+      const sixWeeksOut = addDays(today, 42);
+      while (cursor <= sixWeeksOut) {
+        groups.set(isoDateString(cursor), []);
+        cursor = addDays(cursor, 7);
+      }
+    }
+
     for (const r of releases) {
       const d = parseDate(r.date);
       if (!d) continue;
