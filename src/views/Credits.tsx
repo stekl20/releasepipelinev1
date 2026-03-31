@@ -42,7 +42,6 @@ const INPUT_STYLE = {
 function EditableCell({
   value,
   listId,
-  suggestions,
   highlighted,
   title,
   onSave,
@@ -51,7 +50,6 @@ function EditableCell({
 }: {
   value: string | undefined;
   listId: string;
-  suggestions: string[];
   highlighted: boolean;
   title?: string;
   onSave: (val: string) => void;
@@ -72,34 +70,31 @@ function EditableCell({
   }, [editing]);
 
   function commit() {
+    inputRef.current?.blur();
     setEditing(false);
     onSave(localVal.trim());
   }
 
   function revert() {
+    inputRef.current?.blur();
     setEditing(false);
     setLocalVal(value ?? '');
   }
 
   if (editing) {
     return (
-      <>
-        <datalist id={listId}>
-          {suggestions.map(s => <option key={s} value={s} />)}
-        </datalist>
-        <input
-          ref={inputRef}
-          list={listId}
-          value={localVal}
-          onChange={e => setLocalVal(e.target.value)}
-          onBlur={commit}
-          onKeyDown={e => {
-            if (e.key === 'Enter') commit();
-            if (e.key === 'Escape') revert();
-          }}
-          style={INPUT_STYLE}
-        />
-      </>
+      <input
+        ref={inputRef}
+        list={listId}
+        value={localVal}
+        onChange={e => setLocalVal(e.target.value)}
+        onBlur={commit}
+        onKeyDown={e => {
+          if (e.key === 'Enter') commit();
+          if (e.key === 'Escape') revert();
+        }}
+        style={INPUT_STYLE}
+      />
     );
   }
 
@@ -372,10 +367,7 @@ export function Credits({ releases, credits, onUpsert }: CreditsProps) {
           const isExpanded = expandedWeek === dateKey;
           return (
             <div key={dateKey} style={{ borderTop: '1px solid var(--border)' }}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0', cursor: 'pointer' }}
-                onClick={() => setExpandedWeek(prev => prev === dateKey ? null : dateKey)}
-              >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0' }}>
                 <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', minWidth: 80 }}>
                   {formatDate(dateKey)}
                 </span>
@@ -384,15 +376,18 @@ export function Credits({ releases, credits, onUpsert }: CreditsProps) {
                 </span>
                 {isExpanded && (
                   <button
-                    onClick={e => { e.stopPropagation(); exportWeekCsv(dateKey, weekReleases, credits); }}
+                    onClick={() => exportWeekCsv(dateKey, weekReleases, credits)}
                     style={{ fontSize: 13, color: 'var(--dim)', marginLeft: 'auto' }}
                   >
                     [export csv]
                   </button>
                 )}
-                <span style={{ fontSize: 13, color: 'var(--dim)', marginLeft: isExpanded ? 0 : 'auto' }}>
+                <button
+                  onClick={() => setExpandedWeek(prev => prev === dateKey ? null : dateKey)}
+                  style={{ fontSize: 13, color: 'var(--dim)', marginLeft: isExpanded ? 0 : 'auto' }}
+                >
                   {isExpanded ? '▲' : '▼'}
-                </span>
+                </button>
               </div>
 
               {isExpanded && (
@@ -438,7 +433,6 @@ export function Credits({ releases, credits, onUpsert }: CreditsProps) {
                         <EditableCell
                           value={pseudo}
                           listId="dl-pseudo"
-                          suggestions={pseudoSuggestions}
                           highlighted={isDragHighlighted(dateKey, rowIdx, 'pseudo')}
                           title="click to edit — updates all songs by this act"
                           onSave={val => val && applyPseudo(r.act, val)}
@@ -457,7 +451,6 @@ export function Credits({ releases, credits, onUpsert }: CreditsProps) {
                             key={f.key}
                             value={c[f.key]}
                             listId={`dl-${f.key}`}
-                            suggestions={suggestions[f.key]}
                             highlighted={isDragHighlighted(dateKey, rowIdx, f.key)}
                             onSave={val => onUpsert(r.id, { [f.key]: val })}
                             onFillMouseDown={e => {
