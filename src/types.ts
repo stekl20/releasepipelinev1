@@ -11,3 +11,13 @@ export interface StoredState {
   lastImport: string;
   releases: Release[];
 }
+
+export interface CreditRow {
+  id?: string;
+  release_id: string;
+  pseudo?: string;
+  producer?: string;
+  lyrics?: string;
+  mastered?: string;
+  cover_art?: string;
+}

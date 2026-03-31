@@ -8,7 +8,9 @@ import { EditRelease } from './components/EditRelease';
 import { Pipeline } from './views/Pipeline';
 import { Weeks } from './views/Weeks';
 import { Artists } from './views/Artists';
+import { Credits } from './views/Credits';
 import { useReleases } from './hooks/useReleases';
+import { useCredits } from './hooks/useCredits';
 import { useTheme } from './hooks/useTheme';
 import { parseCsv } from './hooks/useCsvImport';
 import type { Release } from './types';
@@ -36,6 +38,7 @@ function UndoToast({ release, onUndo, onDismiss }: { release: Release; onUndo: (
 
 function AppInner() {
   const { releases, loading, setReleases, toggleApproved, toggleDistributed, deleteRelease, restoreRelease, updateRelease } = useReleases();
+  const { credits, upsertCredit } = useCredits();
   const { theme, toggleTheme } = useTheme();
   const [showBanner, setShowBanner] = useState(false);
   const [bannerData, setBannerData] = useState({ count: 0, weeks: 0 });
@@ -135,6 +138,7 @@ function AppInner() {
           <Route path="/" element={<Pipeline releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onDelete={handleDelete} onEdit={setEditingRelease} />} />
           <Route path="/weeks" element={<Weeks releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onDelete={handleDelete} onEdit={setEditingRelease} />} />
           <Route path="/artists" element={<Artists releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onDelete={handleDelete} onEdit={setEditingRelease} />} />
+          <Route path="/credits" element={<Credits releases={releases} credits={credits} onUpsert={upsertCredit} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

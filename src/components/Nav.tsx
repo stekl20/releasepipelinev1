@@ -27,8 +27,8 @@ export function Nav({ hasData, onReimport, onQuickEntry, theme, onToggleTheme }:
             )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {hasData && !isMobile && ['/', '/weeks', '/artists'].map((path, i) => {
-              const label = ['schedule', 'weeks', 'artists'][i];
+            {hasData && !isMobile && ['/', '/weeks', '/artists', '/credits'].map((path, i) => {
+              const label = ['schedule', 'weeks', 'artists', 'credits'][i];
               return (
                 <NavLink key={path} to={path} end={path === '/'}
                   style={({ isActive }) => ({ fontSize: 14, color: isActive ? 'var(--accent)' : 'var(--dim)', fontWeight: isActive ? 700 : 400 })}>
@@ -46,8 +46,8 @@ export function Nav({ hasData, onReimport, onQuickEntry, theme, onToggleTheme }:
         {isMobile && hasData && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--border)' }}>
             <div style={{ display: 'flex', gap: 20 }}>
-              {['/', '/weeks', '/artists'].map((path, i) => {
-                const label = ['schedule', 'weeks', 'artists'][i];
+              {['/', '/weeks', '/artists', '/credits'].map((path, i) => {
+                const label = ['schedule', 'weeks', 'artists', 'credits'][i];
                 return (
                   <NavLink key={path} to={path} end={path === '/'}
                     style={({ isActive }) => ({ fontSize: 14, color: isActive ? 'var(--text)' : 'var(--dim)', fontWeight: isActive ? 700 : 400 })}>
