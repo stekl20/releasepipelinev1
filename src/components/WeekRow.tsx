@@ -1,8 +1,27 @@
+import Papa from 'papaparse';
 import type { Release } from '../types';
 import { ProgressBar } from './ProgressBar';
 import { ReleaseRow } from './ReleaseRow';
 import { formatDate } from '../utils/dates';
 import { useIsMobile } from '../hooks/useIsMobile';
+
+function exportWeekCsv(dateKey: string, releases: Release[]) {
+  const rows = releases.map(r => ({
+    'Act': r.act,
+    'Title': r.title,
+    'Release Date': formatDate(r.date),
+    'Approved': r.approved ? 'yes' : 'no',
+    'Distributed': r.distributed ? 'yes' : 'no',
+  }));
+  const csv = Papa.unparse(rows);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `week-${dateKey}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 interface WeekRowProps {
   dateKey: string;
@@ -72,6 +91,13 @@ export function WeekRow({ dateKey, releases, weeksOutNum, isExpanded, onToggle, 
           {releases.map(r => (
             <ReleaseRow key={r.id} release={r} onToggleApproved={onToggleApproved} onToggleDistributed={onToggleDistributed} onDelete={onDelete} onEdit={onEdit} compact={!isMobile} />
           ))}
+          {releases.length > 0 && (
+            <div style={{ padding: '8px 0 4px', textAlign: 'right' }}>
+              <button onClick={() => exportWeekCsv(dateKey, releases)} style={{ fontSize: 13, color: 'var(--dim)' }}>
+                [export csv]
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
