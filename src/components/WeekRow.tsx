@@ -35,7 +35,7 @@ interface WeekRowProps {
   onEdit: (release: Release) => void;
 }
 
-const TARGET = 7;
+const TARGET = 9;
 
 export function WeekRow({ dateKey, releases, weeksOutNum, isExpanded, onToggle, onToggleApproved, onToggleDistributed, onDelete, onEdit }: WeekRowProps) {
   const isMobile = useIsMobile();
