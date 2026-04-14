@@ -66,7 +66,6 @@ export function ReleaseRow({ release, onToggleApproved, onToggleDistributed, onT
   const isMobile = useIsMobile();
   const [hovered, setHovered] = useState(false);
   const isDone = release.approved && release.distributed;
-  const needsCover = !release.cover_done && !release.distributed;
 
   const rowColor = isDone
     ? 'var(--dim)'
