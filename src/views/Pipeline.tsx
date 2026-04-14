@@ -1,25 +1,81 @@
 import { useState, useMemo } from 'react';
 import type { Release } from '../types';
 import { ReleaseRow } from '../components/ReleaseRow';
-import { parseDate } from '../utils/dates';
+import { parseDate, formatDate } from '../utils/dates';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 interface PipelineProps {
   releases: Release[];
   onToggleApproved: (id: string) => void;
   onToggleDistributed: (id: string) => void;
+  onToggleCoverDone: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (release: Release) => void;
+}
+
+function NeedsCover({ releases, open, onToggle, onToggleCoverDone, isMobile }: {
+  releases: Release[];
+  open: boolean;
+  onToggle: () => void;
+  onToggleCoverDone: (id: string) => void;
+  isMobile: boolean;
+}) {
+  if (releases.length === 0) return null;
+
+  return (
+    <div style={{ marginBottom: 24, border: '1px solid var(--border)', padding: '12px 16px', backgroundColor: 'var(--surface)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: open ? 12 : 0 }}>
+        <span style={{ fontWeight: 700, fontSize: 15 }}>needs cover</span>
+        <span style={{ fontSize: 13, color: 'var(--orange)' }}>({releases.length})</span>
+        <button onClick={onToggle} style={{ fontSize: 13, color: 'var(--dim)', marginLeft: 4 }}>
+          [{open ? 'hide' : 'show'}]
+        </button>
+      </div>
+      {open && (
+        <>
+          {!isMobile && (
+            <div style={{ display: 'grid', gridTemplateColumns: '160px 220px 90px 80px', gap: 8, paddingBottom: 6, fontSize: 12, color: 'var(--dim)', letterSpacing: '0.05em' }}>
+              <span>ACT</span><span>TITLE</span><span>DATE</span><span>COVER</span>
+            </div>
+          )}
+          {releases.map(r => (
+            isMobile ? (
+              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderTop: '1px solid var(--border)', color: 'var(--orange)', fontSize: 14 }}>
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--dim)' }}>{r.act}</div>
+                  <div>{r.title}</div>
+                  <div style={{ fontSize: 12, color: 'var(--dim)' }}>{formatDate(r.date)}</div>
+                </div>
+                <button onClick={() => onToggleCoverDone(r.id)} style={{ fontSize: 13, color: 'var(--orange)', flexShrink: 0 }}>
+                  {r.cover_done ? '[x]' : '[ ]'}
+                </button>
+              </div>
+            ) : (
+              <div key={r.id} style={{ display: 'grid', gridTemplateColumns: '160px 220px 90px 80px', gap: 8, padding: '8px 0', borderTop: '1px solid var(--border)', alignItems: 'center', color: 'var(--orange)', fontSize: 14 }}>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.act}</span>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</span>
+                <span>{formatDate(r.date)}</span>
+                <button onClick={() => onToggleCoverDone(r.id)} style={{ textAlign: 'left', color: 'var(--orange)', fontSize: 'inherit' }}>
+                  {r.cover_done ? '[x]' : '[ ]'}
+                </button>
+              </div>
+            )
+          ))}
+        </>
+      )}
+    </div>
+  );
 }
 
 type FilterStatus = 'all' | 'pending' | 'approved' | 'distributed';
 type FilterDate = 'upcoming' | 'all' | 'past';
 
-export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDelete, onEdit }: PipelineProps) {
+export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onToggleCoverDone, onDelete, onEdit }: PipelineProps) {
   const isMobile = useIsMobile();
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [filterAct, setFilterAct] = useState<string>('all');
   const [filterDate, setFilterDate] = useState<FilterDate>('upcoming');
+  const [coverOpen, setCoverOpen] = useState(false);
 
   const today = useMemo(() => {
     const d = new Date();
@@ -56,6 +112,15 @@ export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDe
   const approved = statsBase.filter(r => r.approved).length;
   const distributed = statsBase.filter(r => r.distributed).length;
 
+  const needsCoverReleases = useMemo(() => {
+    return releases.filter(r => {
+      if (r.distributed) return false;
+      if (r.cover_done) return false;
+      const d = parseDate(r.date);
+      return d && d >= today;
+    });
+  }, [releases, today]);
+
   const upcomingDates = useMemo(() => {
     const set = new Set(releases.filter(r => {
       const d = parseDate(r.date);
@@ -66,6 +131,13 @@ export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDe
 
   return (
     <div style={{ padding: '32px 0' }}>
+      <NeedsCover
+        releases={needsCoverReleases}
+        open={coverOpen}
+        onToggle={() => setCoverOpen(v => !v)}
+        onToggleCoverDone={onToggleCoverDone}
+        isMobile={isMobile}
+      />
       <div style={{ fontSize: 13, color: 'var(--dim)', marginBottom: 24, display: 'flex', gap: 24, flexWrap: 'wrap' }}>
         <span>total: <span style={{ color: 'var(--text)' }}>{statsBase.length} releases</span></span>
         <span>approved: <span style={{ color: 'var(--text)' }}>{approved}/{statsBase.length}</span></span>
@@ -96,8 +168,8 @@ export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDe
 
       {!isMobile && (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: '160px 220px 90px 100px 110px 44px', gap: 8, paddingBottom: 8, fontSize: 13, color: 'var(--dim)', letterSpacing: '0.05em' }}>
-            <span>ACT</span><span>TITLE</span><span>DATE</span><span>APPROVED</span><span>DISTRIBUTED</span><span />
+          <div style={{ display: 'grid', gridTemplateColumns: '160px 220px 90px 100px 110px 44px 100px', gap: 8, padding: '0 0 8px 10px', fontSize: 13, color: 'var(--dim)', letterSpacing: '0.05em' }}>
+            <span>ACT</span><span>TITLE</span><span>DATE</span><span>APPROVED</span><span>DISTRIBUTED</span><span /><span />
           </div>
           <hr />
         </>
@@ -108,7 +180,7 @@ export function Pipeline({ releases, onToggleApproved, onToggleDistributed, onDe
         <div style={{ color: 'var(--dim)', padding: '24px 0', fontSize: 14 }}>no releases match current filters.</div>
       ) : (
         filtered.map(r => (
-          <ReleaseRow key={r.id} release={r} onToggleApproved={onToggleApproved} onToggleDistributed={onToggleDistributed} onDelete={onDelete} onEdit={onEdit} />
+          <ReleaseRow key={r.id} release={r} onToggleApproved={onToggleApproved} onToggleDistributed={onToggleDistributed} onToggleCoverDone={onToggleCoverDone} onDelete={onDelete} onEdit={onEdit} />
         ))
       )}
     </div>

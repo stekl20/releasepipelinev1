@@ -55,6 +55,12 @@ export function useReleases() {
     await supabase.from('releases').update(updates).eq('id', id);
   }, [releases]);
 
+  const toggleCoverDone = useCallback(async (id: string) => {
+    const release = releases?.find(r => r.id === id);
+    if (!release) return;
+    await supabase.from('releases').update({ cover_done: !release.cover_done }).eq('id', id);
+  }, [releases]);
+
   const deleteRelease = useCallback(async (id: string) => {
     await supabase.from('releases').delete().eq('id', id);
   }, []);
@@ -78,6 +84,7 @@ export function useReleases() {
     setReleases: syncReleases,
     toggleApproved,
     toggleDistributed,
+    toggleCoverDone,
     deleteRelease,
     restoreRelease,
     updateRelease,

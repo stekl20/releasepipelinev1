@@ -8,8 +8,11 @@
   --dim: #A8A8A0;
   --green: #39FF14;
   --amber: #FFB800;
+  --orange: #FF6B35;
   --red: #FF3B3B;
   --accent: #39FF14;
+  --orange-tint: transparent;
+  --amber-tint: transparent;
 }
 
 [data-theme="light"] {
@@ -20,9 +23,12 @@
   --text: #1A1A18;
   --dim: #4A4A45;
   --green: #1C7A00;
-  --amber: #C44A00;
+  --amber: #9B6A00;
+  --orange: #B82800;
   --red: #B80000;
   --accent: #1C7A00;
+  --orange-tint: rgba(184, 40, 0, 0.09);
+  --amber-tint: rgba(160, 130, 0, 0.14);
 }
 
 [data-theme="light"] body {

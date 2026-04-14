@@ -31,13 +31,14 @@ interface WeekRowProps {
   onToggle: () => void;
   onToggleApproved: (id: string) => void;
   onToggleDistributed: (id: string) => void;
+  onToggleCoverDone: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (release: Release) => void;
 }
 
 const TARGET = 9;
 
-export function WeekRow({ dateKey, releases, weeksOutNum, isExpanded, onToggle, onToggleApproved, onToggleDistributed, onDelete, onEdit }: WeekRowProps) {
+export function WeekRow({ dateKey, releases, weeksOutNum, isExpanded, onToggle, onToggleApproved, onToggleDistributed, onToggleCoverDone, onDelete, onEdit }: WeekRowProps) {
   const isMobile = useIsMobile();
   const count = releases.length;
   const approved = releases.filter(r => r.approved).length;
@@ -89,7 +90,7 @@ export function WeekRow({ dateKey, releases, weeksOutNum, isExpanded, onToggle, 
             </div>
           )}
           {releases.map(r => (
-            <ReleaseRow key={r.id} release={r} onToggleApproved={onToggleApproved} onToggleDistributed={onToggleDistributed} onDelete={onDelete} onEdit={onEdit} compact={!isMobile} />
+            <ReleaseRow key={r.id} release={r} onToggleApproved={onToggleApproved} onToggleDistributed={onToggleDistributed} onToggleCoverDone={onToggleCoverDone} onDelete={onDelete} onEdit={onEdit} compact={!isMobile} />
           ))}
           {releases.length > 0 && (
             <div style={{ padding: '8px 0 4px', textAlign: 'right' }}>

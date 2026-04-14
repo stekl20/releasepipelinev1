@@ -5,6 +5,7 @@ export interface Release {
   date: string; // ISO date string
   approved: boolean;
   distributed: boolean;
+  cover_done?: boolean;
 }
 
 export interface StoredState {

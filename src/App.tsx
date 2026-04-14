@@ -37,7 +37,7 @@ function UndoToast({ release, onUndo, onDismiss }: { release: Release; onUndo: (
 }
 
 function AppInner() {
-  const { releases, loading, setReleases, toggleApproved, toggleDistributed, deleteRelease, restoreRelease, updateRelease } = useReleases();
+  const { releases, loading, setReleases, toggleApproved, toggleDistributed, toggleCoverDone, deleteRelease, restoreRelease, updateRelease } = useReleases();
   const { credits, upsertCredit } = useCredits();
   const { theme, toggleTheme } = useTheme();
   const [showBanner, setShowBanner] = useState(false);
@@ -135,9 +135,9 @@ function AppInner() {
       )}
       <main style={{ maxWidth: 960, margin: '0 auto', padding: '0 16px', width: '100%' }}>
         <Routes>
-          <Route path="/" element={<Pipeline releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onDelete={handleDelete} onEdit={setEditingRelease} />} />
-          <Route path="/weeks" element={<Weeks releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onDelete={handleDelete} onEdit={setEditingRelease} />} />
-          <Route path="/artists" element={<Artists releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onDelete={handleDelete} onEdit={setEditingRelease} />} />
+          <Route path="/" element={<Pipeline releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onToggleCoverDone={toggleCoverDone} onDelete={handleDelete} onEdit={setEditingRelease} />} />
+          <Route path="/weeks" element={<Weeks releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onToggleCoverDone={toggleCoverDone} onDelete={handleDelete} onEdit={setEditingRelease} />} />
+          <Route path="/artists" element={<Artists releases={releases} onToggleApproved={toggleApproved} onToggleDistributed={toggleDistributed} onToggleCoverDone={toggleCoverDone} onDelete={handleDelete} onEdit={setEditingRelease} />} />
           <Route path="/credits" element={<Credits releases={releases} credits={credits} onUpsert={upsertCredit} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

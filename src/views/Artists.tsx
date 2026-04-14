@@ -9,6 +9,7 @@ interface ArtistsProps {
   releases: Release[];
   onToggleApproved: (id: string) => void;
   onToggleDistributed: (id: string) => void;
+  onToggleCoverDone: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (release: Release) => void;
 }
@@ -116,7 +117,7 @@ function NeedsAttention({ items, open, onToggle, isMobile }: NeedsAttentionProps
   );
 }
 
-export function Artists({ releases, onToggleApproved, onToggleDistributed, onDelete, onEdit }: ArtistsProps) {
+export function Artists({ releases, onToggleApproved, onToggleDistributed, onToggleCoverDone, onDelete, onEdit }: ArtistsProps) {
   const isMobile = useIsMobile();
   const { actConfig, loaded: actConfigLoaded, getCadence, setCadence, setRetired } = useActConfig();
   const [filterAct, setFilterAct] = useState<string>('all');
@@ -302,6 +303,7 @@ export function Artists({ releases, onToggleApproved, onToggleDistributed, onDel
                   release={r}
                   onToggleApproved={onToggleApproved}
                   onToggleDistributed={onToggleDistributed}
+                  onToggleCoverDone={onToggleCoverDone}
                   onDelete={onDelete}
                   onEdit={onEdit}
                   compact

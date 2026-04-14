@@ -8,11 +8,12 @@ interface WeeksProps {
   releases: Release[];
   onToggleApproved: (id: string) => void;
   onToggleDistributed: (id: string) => void;
+  onToggleCoverDone: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (release: Release) => void;
 }
 
-export function Weeks({ releases, onToggleApproved, onToggleDistributed, onDelete, onEdit }: WeeksProps) {
+export function Weeks({ releases, onToggleApproved, onToggleDistributed, onToggleCoverDone, onDelete, onEdit }: WeeksProps) {
   const isMobile = useIsMobile();
   const [showAll, setShowAll] = useState(false);
   const [expandedWeek, setExpandedWeek] = useState<string | null>(null);
@@ -80,6 +81,7 @@ export function Weeks({ releases, onToggleApproved, onToggleDistributed, onDelet
               onToggle={() => setExpandedWeek(prev => prev === dateKey ? null : dateKey)}
               onToggleApproved={onToggleApproved}
               onToggleDistributed={onToggleDistributed}
+              onToggleCoverDone={onToggleCoverDone}
               onDelete={onDelete}
               onEdit={onEdit}
             />
