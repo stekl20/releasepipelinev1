@@ -70,19 +70,13 @@ export function ReleaseRow({ release, onToggleApproved, onToggleDistributed, onT
 
   const rowColor = isDone
     ? 'var(--dim)'
-    : needsCover
-    ? 'var(--orange)'
     : release.approved && !release.distributed
     ? 'var(--amber)'
     : 'var(--text)';
 
   const statusLabel = getStatusLabel(release);
 
-  const rowBg = isDone
-    ? undefined
-    : needsCover
-    ? 'var(--orange-tint)'
-    : release.approved && !release.distributed
+  const rowBg = (!isDone && release.approved && !release.distributed)
     ? 'var(--amber-tint)'
     : undefined;
 
@@ -151,8 +145,8 @@ export function ReleaseRow({ release, onToggleApproved, onToggleDistributed, onT
           fontSize: 11,
           letterSpacing: '0.05em',
           color: statusLabel.color,
-          opacity: hovered ? 0.5 : 0,
-          transition: hovered ? 'opacity 0.3s ease 1.5s' : 'opacity 0.15s ease 0s',
+          opacity: hovered ? 0.75 : 0,
+          transition: hovered ? 'opacity 0.15s ease 0.8s' : 'opacity 0.15s ease 0s',
           whiteSpace: 'nowrap',
           pointerEvents: 'none',
         }}>
